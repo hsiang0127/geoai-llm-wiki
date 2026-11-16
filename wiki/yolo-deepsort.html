@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoAI 實戰：基於 YOLOv8 與 DeepSORT 的無人機車流追蹤與座標映射 | GeoAI Wiki</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-slate-800 antialiased">
+  <!-- 手機版頂部導覽列 -->
+  <header class="md:hidden bg-slate-900 text-slate-300 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow">
+    <a href="../index.html" class="font-bold text-white tracking-wide flex items-center gap-2">
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+      GeoAI &amp; Spatial LLM Wiki
+    </a>
+    <button
+      id="menu-toggle"
+      type="button"
+      aria-label="開啟或收合導覽選單"
+      aria-expanded="false"
+      class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </header>
+
+  <div class="min-h-screen flex flex-col md:flex-row">
+    <!-- 左側固定寬度導覽選單 -->
+    <nav
+      id="sidebar"
+      class="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:left-0 md:w-72 bg-slate-900 text-slate-300 p-6 justify-between z-20"
+    >
+      <div>
+        <div class="hidden md:block mb-8 pb-4 border-b border-slate-800">
+          <p class="text-xs uppercase tracking-widest text-blue-400 font-semibold mb-1">GeoAI Knowledge Base</p>
+          <a href="../index.html" class="text-xl font-bold text-white tracking-tight hover:text-blue-400 transition">
+            GeoAI 空間資訊大模型應用庫
+          </a>
+        </div>
+
+        <div class="space-y-6">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">總覽導航</p>
+            <ul class="space-y-1">
+              <li>
+                <a
+                  href="../index.html"
+                  class="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span>首頁總覽</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">核心技術筆記</p>
+            <ul class="space-y-1.5">
+              <li>
+                <a
+                  href="uav-vision.html"
+                  class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span class="block font-medium">無人機影像多模態辨識</span>
+                  <span class="block text-xs text-slate-400">uav-vision.html</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="gee-copilot.html"
+                  class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span class="block font-medium">GEE 遙測程式碼生成</span>
+                  <span class="block text-xs text-slate-400">gee-copilot.html</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="yolo-deepsort.html"
+                  class="block px-3 py-2 rounded-lg bg-blue-600 text-white font-medium"
+                >
+                  <span class="block font-medium">UAV 車流追蹤與 TWD97 映射</span>
+                  <span class="block text-xs text-blue-100">yolo-deepsort.html</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="lidar-rag.html"
+                  class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span class="block font-medium">光達操作手冊 RAG</span>
+                  <span class="block text-xs text-slate-400">lidar-rag.html</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-4 border-t border-slate-800 text-xs text-slate-500">
+        <p>架構：Karpathy LLM Wiki + Tailwind</p>
+        <p class="mt-1">最後更新：2026-11-16</p>
+      </div>
+    </nav>
+
+    <!-- 右側主要內容區 -->
+    <main class="flex-1 md:ml-72 bg-white">
+      <div class="max-w-4xl mx-auto px-6 py-10 md:px-12 md:py-12">
+        <div class="mb-4 flex flex-wrap items-center gap-2 text-xs">
+          <a href="../index.html" class="text-blue-600 hover:underline">首頁</a>
+          <span class="text-slate-400">/</span>
+          <span class="text-slate-500">技術筆記</span>
+          <span class="text-slate-400">/</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-600 font-semibold border border-blue-200">邊緣視覺 × 座標映射</span>
+        </div>
+
+        <h1 class="text-3xl font-extrabold text-slate-800 mb-6 border-b pb-2">
+          GeoAI 實戰：基於 YOLOv8 與 DeepSORT 的無人機車流追蹤與座標映射
+        </h1>
+
+        <div class="mb-8 p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-600 flex flex-wrap gap-x-6 gap-y-2">
+          <span><strong>建立日期：</strong>2026-11-16</span>
+          <span><strong>關鍵技術：</strong>YOLOv8、DeepSORT、TWD97、GeoAI</span>
+          <span><strong>原始來源：</strong><code class="text-xs bg-slate-200/70 px-1.5 py-0.5 rounded">raw/articles/2026-11-16-yolo-deepsort-uav-traffic.md</code></span>
+        </div>
+
+        <section class="space-y-4 text-slate-700 leading-relaxed mb-8">
+          <h2 class="text-xl font-bold text-slate-800">1. 核心概念簡介</h2>
+          <p>
+            隨著無人機（<span class="font-semibold text-blue-600">UAV</span>）具備高機動性與廣闊視野的優勢，將其應用於城市交通監控與車流分析已成為 <span class="font-semibold text-blue-600">GeoAI</span> 的熱門研究方向。本篇筆記探討如何結合先進的電腦視覺物件偵測模型（<span class="font-semibold text-blue-600">YOLOv8</span>）、多目標追蹤演算法（<span class="font-semibold text-blue-600">DeepSORT</span>），以及空間測量技術，將無人機二維影像中的車輛軌跡，精準映射至台灣真實的 <span class="font-semibold text-blue-600">TWD97</span> 空間座標系統中。
+          </p>
+        </section>
+
+        <section class="space-y-5 text-slate-700 leading-relaxed mb-8">
+          <h2 class="text-xl font-bold text-slate-800">2. 技術架構與運作流程</h2>
+          <p>一套自動化的 <span class="font-semibold text-blue-600">UAV</span> 邊緣運算車流偵測系統，主要由以下三個核心模組構成：</p>
+
+          <div class="grid grid-cols-1 gap-4">
+            <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/70">
+              <h3 class="text-lg font-bold text-slate-800 mb-2">模組一：影像物件偵測（Object Detection）</h3>
+              <p class="text-sm leading-relaxed">
+                採用 <span class="font-semibold text-blue-600">YOLOv8n-visdrone</span> 輕量化模型。該模型專門針對無人機俯視角、小目標物件（如遠處的車輛、行人）進行預訓練，能在運算資源受限的邊緣運算裝置上，保持高幀率（<span class="font-semibold text-blue-600">FPS</span>）與高準確度。
+              </p>
+            </div>
+
+            <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/70">
+              <h3 class="text-lg font-bold text-slate-800 mb-2">模組二：多目標追蹤（Multi-Object Tracking）</h3>
+              <p class="text-sm leading-relaxed">
+                偵測到車輛後，系統引入 <span class="font-semibold text-blue-600">DeepSORT</span> 演算法。DeepSORT 利用 <span class="font-semibold text-blue-600">ResNet50</span> 卷積神經網路提取每輛車的外觀特徵（Feature Extraction），並結合卡爾曼濾波器（<span class="font-semibold text-blue-600">Kalman Filter</span>）預測車輛的運動軌跡，解決車輛在行駛過程中被路樹遮蔽或兩車交會時發生的 ID 丟失與錯置問題。
+              </p>
+            </div>
+
+            <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/70">
+              <h3 class="text-lg font-bold text-slate-800 mb-2">模組三：空間座標轉換（Spatial Coordinate Mapping）</h3>
+              <p class="text-sm leading-relaxed">
+                這是將純資訊工程轉化為空間資訊工程（<span class="font-semibold text-blue-600">Geoinformatics</span>）的關鍵一步。透過相機內外參矩陣（<span class="font-semibold text-blue-600">Camera Intrinsics &amp; Extrinsics</span>）與無人機飛控系統紀錄的姿態數據（<span class="font-semibold text-blue-600">Pitch, Roll, Yaw</span>）及 <span class="font-semibold text-blue-600">GPS</span> 座標，我們能建立共線方程式，將畫面中追蹤到的每一幀車輛像素座標（Pixel Coordinates），映射至對應的 <span class="font-semibold text-blue-600">TWD97</span> 二維平面座標。
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-xl font-bold text-slate-800 mb-3">3. 核心程式碼範例（Python 推理迴圈）</h2>
+          <p class="text-slate-700 leading-relaxed mb-3">
+            以下示範以 <span class="font-semibold text-blue-600">YOLOv8</span> 與 <span class="font-semibold text-blue-600">DeepSORT</span> 處理無人機交通影像串流，並計算車輛底盤中心像素座標以供後續 <span class="font-semibold text-blue-600">TWD97</span> 轉換的推理流程：
+          </p>
+          <pre><code class="bg-slate-800 text-gray-100 p-4 rounded-lg block overflow-x-auto my-4">import cv2
+import numpy as np
+from ultralytics import YOLO
+from deep_sort_realtime.deepsort_tracker import DeepSort
+
+# 1. 載入無人機專用 YOLOv8 模型與設定 DeepSORT
+model = YOLO('yolov8n-visdrone.pt')
+tracker = DeepSort(max_age=30, n_init=3, nn_budget=100)
+
+# 2. 開啟無人機影像串流
+cap = cv2.VideoCapture('uav_traffic_video.mp4')
+
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    # 3. YOLOv8 物件偵測
+    results = model(frame)[0]
+    detections = []
+
+    for box in results.boxes:
+        x1, y1, x2, y2 = box.xyxy[0].tolist()
+        conf = box.conf[0].item()
+        cls_id = int(box.cls[0].item())
+
+        # 篩選車輛類別 (假設 2, 3, 5, 7 為各類車輛)
+        if cls_id in [2, 3, 5, 7] and conf &gt; 0.5:
+            # 轉換為 DeepSORT 所需格式 [left, top, w, h]
+            detections.append(([x1, y1, x2 - x1, y2 - y1], conf, cls_id))
+
+    # 4. DeepSORT 軌跡追蹤
+    tracks = tracker.update_tracks(detections, frame=frame)
+
+    for track in tracks:
+        if not track.is_confirmed():
+            continue
+
+        track_id = track.track_id
+        ltrb = track.to_ltrb() # [left, top, right, bottom]
+
+        # 計算車輛底盤中心點 (Pixel Coordinate)
+        center_x = int((ltrb[0] + ltrb[2]) / 2)
+        center_y = int(ltrb[3])
+
+        # TODO: 將 (center_x, center_y) 透過轉換矩陣映射至 TWD97 座標
+        # twd97_x, twd97_y = pixel_to_twd97(center_x, center_y, drone_telemetry)
+
+        # 繪製追蹤框與 ID
+        cv2.rectangle(frame, (int(ltrb[0]), int(ltrb[1])), (int(ltrb[2]), int(ltrb[3])), (0, 255, 0), 2)
+        cv2.putText(frame, f"ID: {track_id}", (int(ltrb[0]), int(ltrb[1]) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+
+    cv2.imshow('UAV Traffic Tracking', frame)
+    if cv2.waitKey(1) &amp; 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()</code></pre>
+        </section>
+
+        <section class="space-y-4 text-slate-700 leading-relaxed mb-8">
+          <h2 class="text-xl font-bold text-slate-800">4. 未來應用展望</h2>
+          <p>
+            透過這套系統即時產生的 <span class="font-semibold text-blue-600">TWD97</span> 座標軌跡，我們不僅能計算各路段的真實車速、車流密度，還能將軌跡資料直接匯入 <span class="font-semibold text-blue-600">QGIS</span> 或 <span class="font-semibold text-blue-600">ArcGIS Pro</span> 進行空間熱區分析。結合邊緣運算平台，無人機將具備在災區、特殊路段即時回傳交通數據的能力，大幅提升智慧城市的交通治理效率。
+          </p>
+        </section>
+
+        <section class="p-5 rounded-xl bg-blue-50 border border-blue-200 text-slate-700">
+          <h3 class="font-bold text-blue-800 mb-2">實務整合檢核重點</h3>
+          <ul class="list-disc pl-5 space-y-1.5 text-sm">
+            <li><strong>VisDrone 類別對照</strong>：使用 <code class="bg-white px-1.5 py-0.5 rounded border border-blue-100 text-slate-800">yolov8n-visdrone.pt</code> 時，建議先印出 <code class="bg-white px-1.5 py-0.5 rounded border border-blue-100 text-slate-800">model.names</code> 確認小汽車、貨車、公車等類別 ID（VisDrone 與 COCO 編號不同）。</li>
+            <li><strong>座標投影精度</strong>：若監測路段存在坡度或高架橋重疊，單純平面單應性假設可能產生位移誤差，建議搭配數值地表模型（<span class="font-semibold text-blue-600">DSM</span>）進行光線追蹤反算高程。</li>
+          </ul>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    if (menuToggle && sidebar) {
+      menuToggle.addEventListener('click', () => {
+        const isHidden = sidebar.classList.contains('hidden');
+        sidebar.classList.toggle('hidden', !isHidden);
+        menuToggle.setAttribute('aria-expanded', String(isHidden));
+      });
+    }
+  </script>
+</body>
+</html>

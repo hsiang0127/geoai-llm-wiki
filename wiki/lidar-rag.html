@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>光達（LiDAR）操作手冊與測量法規 RAG 檢索系統 | GeoAI Wiki</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-slate-800 antialiased">
+  <!-- 手機版頂部導覽列 -->
+  <header class="md:hidden bg-slate-900 text-slate-300 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow">
+    <a href="../index.html" class="font-bold text-white tracking-wide flex items-center gap-2">
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+      GeoAI &amp; Spatial LLM Wiki
+    </a>
+    <button
+      id="menu-toggle"
+      type="button"
+      aria-label="開啟或收合導覽選單"
+      aria-expanded="false"
+      class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </header>
+
+  <div class="min-h-screen flex flex-col md:flex-row">
+    <!-- 左側固定寬度導覽選單 -->
+    <nav
+      id="sidebar"
+      class="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:left-0 md:w-72 bg-slate-900 text-slate-300 p-6 justify-between z-20"
+    >
+      <div>
+        <div class="hidden md:block mb-8 pb-4 border-b border-slate-800">
+          <p class="text-xs uppercase tracking-widest text-blue-400 font-semibold mb-1">GeoAI Knowledge Base</p>
+          <a href="../index.html" class="text-xl font-bold text-white tracking-tight hover:text-blue-400 transition">
+            GeoAI 空間資訊大模型應用庫
+          </a>
+        </div>
+
+        <div class="space-y-6">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">總覽導航</p>
+            <ul class="space-y-1">
+              <li>
+                <a
+                  href="../index.html"
+                  class="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span>首頁總覽</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">核心技術筆記</p>
+            <ul class="space-y-1.5">
+              <li>
+                <a
+                  href="uav-vision.html"
+                  class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span class="block font-medium">無人機影像多模態辨識</span>
+                  <span class="block text-xs text-slate-400">uav-vision.html</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="gee-copilot.html"
+                  class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span class="block font-medium">GEE 遙測程式碼生成</span>
+                  <span class="block text-xs text-slate-400">gee-copilot.html</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="yolo-deepsort.html"
+                  class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span class="block font-medium">UAV 車流追蹤與 TWD97 映射</span>
+                  <span class="block text-xs text-slate-400">yolo-deepsort.html</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="lidar-rag.html"
+                  class="block px-3 py-2 rounded-lg bg-blue-600 text-white font-medium"
+                >
+                  <span class="block font-medium">光達操作手冊 RAG</span>
+                  <span class="block text-xs text-blue-100">lidar-rag.html</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-4 border-t border-slate-800 text-xs text-slate-500">
+        <p>架構：Karpathy LLM Wiki + Tailwind</p>
+        <p class="mt-1">最後更新：2026-11-16</p>
+      </div>
+    </nav>
+
+    <!-- 右側主要內容區 -->
+    <main class="flex-1 md:ml-72 bg-white">
+      <div class="max-w-4xl mx-auto px-6 py-10 md:px-12 md:py-12">
+        <div class="mb-4 flex flex-wrap items-center gap-2 text-xs">
+          <a href="../index.html" class="text-blue-600 hover:underline">首頁</a>
+          <span class="text-slate-400">/</span>
+          <span class="text-slate-500">技術筆記</span>
+          <span class="text-slate-400">/</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-600 font-semibold border border-blue-200">領域知識 RAG</span>
+        </div>
+
+        <h1 class="text-3xl font-extrabold text-slate-800 mb-6 border-b pb-2">
+          光達（LiDAR）操作手冊與測量法規 RAG 檢索系統
+        </h1>
+
+        <div class="mb-8 p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-600 flex flex-wrap gap-x-6 gap-y-2">
+          <span><strong>建立日期：</strong>2026-11-16</span>
+          <span><strong>關鍵技術：</strong>LiDAR、RAG、Hybrid Search、LAS 1.4、TWD97</span>
+          <span><strong>狀態：</strong>技術架構設計筆記</span>
+        </div>
+
+        <section class="space-y-4 text-slate-700 leading-relaxed mb-8">
+          <h2 class="text-xl font-bold text-slate-800">1. 問題背景與空間文件檢索痛點</h2>
+          <p>
+            在光達（<span class="font-semibold text-blue-600">LiDAR</span>）實務作業中，無論是地面光達（<span class="font-semibold text-blue-600">TLS</span>）或空載／無人機光達（<span class="font-semibold text-blue-600">ALS / UAV-LiDAR</span>），測量人員常需同時查閱數百頁的英文儀器操作手冊、點雲後處理軟體參數說明，以及國內測繪作業規範（例如點雲密度標準、高程檢核點中誤差容許值、<span class="font-semibold text-blue-600">LAS 1.4</span> 分類碼定義與 <span class="font-semibold text-blue-600">TWD97</span> / <span class="font-semibold text-blue-600">TWVD2001</span> 坐標基準轉換）。
+          </p>
+          <p>
+            若直接向通用大模型提問，模型極易因訓練資料混雜不同機型與過時法規而產生數字或參數幻覺（<span class="font-semibold text-blue-600">Hallucination</span>）。透過建置領域專用的 <span class="font-semibold text-blue-600">RAG（檢索增強生成）</span> 系統，可讓 AI 先精準檢索官方手冊與法規原文，再產出附帶頁碼出處的工程級回答。
+          </p>
+        </section>
+
+        <section class="space-y-5 text-slate-700 leading-relaxed mb-8">
+          <h2 class="text-xl font-bold text-slate-800">2. 光達領域 RAG 核心架構設計</h2>
+          <div class="grid grid-cols-1 gap-4">
+            <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/70">
+              <h3 class="text-lg font-bold text-slate-800 mb-2">步驟一：結構化切片與規格表保留（Structure-Aware Chunking）</h3>
+              <p class="text-sm leading-relaxed">
+                測量手冊包含大量多欄規格表（例如掃描脈衝重複頻率 <span class="font-semibold text-blue-600">PRF</span>、測距精度、最小點距與最大作業航高）。切片時需以 Markdown 表格保留完整列資訊，並為每個切片掛載 <code class="bg-white px-1 rounded border text-xs">doc_name</code>、<code class="bg-white px-1 rounded border text-xs">device_model</code>、<code class="bg-white px-1 rounded border text-xs">chapter</code> 與 <code class="bg-white px-1 rounded border text-xs">page</code> 等 Metadata。
+              </p>
+            </div>
+
+            <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/70">
+              <h3 class="text-lg font-bold text-slate-800 mb-2">步驟二：混合檢索（Hybrid Search：Embedding + BM25）</h3>
+              <p class="text-sm leading-relaxed">
+                單靠向量語意檢索（<span class="font-semibold text-blue-600">Embedding</span>）對「點雲分類代碼 2 代表地面點」、「<span class="font-semibold text-blue-600">PDOP</span> 上限」或特定錯誤碼（如 <code class="bg-white px-1 rounded border text-xs">ERR_IMU_INIT</code>）容易失準。因此應結合 <span class="font-semibold text-blue-600">BM25</span> 關鍵字比對與向量檢索，並以交叉編碼器（Reranker）進行重排序。
+              </p>
+            </div>
+
+            <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/70">
+              <h3 class="text-lg font-bold text-slate-800 mb-2">步驟三：強制條文溯源輸出（Citation-Grounded Generation）</h3>
+              <p class="text-sm leading-relaxed">
+                在系統 Prompt 中嚴格限制：所有數值規範（如 <span class="font-semibold text-blue-600">RTK</span> 固定解初始化時間、檢核點中誤差門檻）必須附帶檢索來源的文件名稱與章節頁碼；若知識庫未收錄該條文，AI 必須明確回答「手冊未記載」，禁止自行推估。
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-xl font-bold text-slate-800 mb-3">3. Python 光達文件 RAG 檢索原型範例</h2>
+          <p class="text-slate-700 leading-relaxed mb-3">
+            以下示範使用 <span class="font-semibold text-blue-600">Python</span> 建立具備 Metadata 過濾與來源引用格式化的光達手冊 RAG 檢索管線原型：
+          </p>
+          <pre><code class="bg-slate-800 text-gray-100 p-4 rounded-lg block overflow-x-auto my-4">from dataclasses import dataclass
+
+@dataclass
+class LidarDocChunk:
+    doc_name: str
+    device_model: str
+    section: str
+    page: int
+    content: str
+
+# 1. 模擬切片後的光達手冊與測量法規知識片段
+KNOWLEDGE_CHUNKS = [
+    LidarDocChunk(
+        doc_name="UAV-LiDAR_L2_User_Manual_v2.pdf",
+        device_model="Zenmuse L2",
+        section="4.2 航線規劃與點雲密度建議",
+        page=38,
+        content="一般地形測繪建議航高 50-150 m，航向重疊率 >= 70%，旁向重疊率 >= 50%；啟用三回波模式可提升林下地面點穿透率。"
+    ),
+    LidarDocChunk(
+        doc_name="UAV-LiDAR_L2_User_Manual_v2.pdf",
+        device_model="Zenmuse L2",
+        section="5.1 IMU 慣導校準規範",
+        page=46,
+        content="起飛前須於空曠處完成 RTK 固定解收斂，並依任務需求每隔 100 秒或直線飛行 1000 公尺執行一次 8 字形或加減速 IMU 校準。"
+    ),
+    LidarDocChunk(
+        doc_name="空載光達測繪作業規範_112修訂版.pdf",
+        device_model="通用法規",
+        section="第 3 章 成果精度檢核",
+        page=14,
+        content="基本地形圖測製之裸露平坦地區，點雲高程中誤差（RMSEz）應小於 15 公分；輸出格式須符合 ASPRS LAS 1.4 標準並註記 TWD97 / TWVD2001 坐標系統。"
+    ),
+]
+
+def hybrid_retrieve(query: str, model_filter: str | None = None, top_k: int = 2) -> list[LidarDocChunk]:
+    """簡易混合檢索模擬：結合型號 Metadata 過濾與關鍵字權重計分。"""
+    terms = [t.lower() for t in query.replace("，", " ").split() if t.strip()]
+    scored = []
+
+    for chunk in KNOWLEDGE_CHUNKS:
+        if model_filter and chunk.device_model not in (model_filter, "通用法規"):
+            continue
+        text_lower = f"{chunk.section} {chunk.content}".lower()
+        score = sum(1 for t in terms if t in text_lower)
+        # 針對常見空間名詞補充語意加權模擬
+        if "精度" in query and "中誤差" in chunk.content:
+            score += 2
+        if "校準" in query and "imu" in text_lower:
+            score += 2
+        if score &gt; 0:
+            scored.append((score, chunk))
+
+    scored.sort(key=lambda x: x[0], reverse=True)
+    return [item[1] for item in scored[:top_k]]
+
+def build_rag_prompt(query: str, retrieved: list[LidarDocChunk]) -> str:
+    """組裝強制附帶出處引用的 LLM 系統提示詞。"""
+    context_blocks = "\n".join(
+        f"[{i+1}] 來源：{c.doc_name} | {c.section} (p.{c.page})\n內容：{c.content}"
+        for i, c in enumerate(retrieved)
+    )
+    return (
+        "請僅依據下列檢索到的光達手冊與法規片段回答問題，每個關鍵數據後方都必須標註 [來源編號]；"
+        "若資料中未提及，請直接說明查無記載。\n\n"
+        f"### 參考片段\n{context_blocks}\n\n"
+        f"### 使用者問題\n{query}"
+    )
+
+if __name__ == "__main__":
+    user_q = "Zenmuse L2 飛行時 IMU 校準頻率與成果高程精度要求為何？"
+    hits = hybrid_retrieve(user_q, model_filter="Zenmuse L2", top_k=2)
+    print(build_rag_prompt(user_q, hits))</code></pre>
+        </section>
+
+        <section class="p-5 rounded-xl bg-blue-50 border border-blue-200 text-slate-700">
+          <h3 class="font-bold text-blue-800 mb-2">與本應用庫其他模組的整合綜效</h3>
+          <ul class="list-disc pl-5 space-y-1.5 text-sm">
+            <li><strong>GEE Copilot API 檢索共構</strong>：這套附帶文件版本與章節引用的 <span class="font-semibold text-blue-600">RAG</span> 檢索管線，同樣可直接套用至 <a href="gee-copilot.html" class="text-blue-600 font-semibold hover:underline">GEE Copilot</a>，解決遙測 API 版本過時問題。</li>
+            <li><strong>實務部署建議</strong>：正式專案可搭配 <code class="bg-white px-1.5 py-0.5 rounded border border-blue-100 text-slate-800">PyMuPDF / Marker</code> 解析 PDF 表格，並透過 <code class="bg-white px-1.5 py-0.5 rounded border border-blue-100 text-slate-800">Qdrant</code> 或 <code class="bg-white px-1.5 py-0.5 rounded border border-blue-100 text-slate-800">qmd</code> 建立本機向量與 BM25 混合索引。</li>
+          </ul>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    if (menuToggle && sidebar) {
+      menuToggle.addEventListener('click', () => {
+        const isHidden = sidebar.classList.contains('hidden');
+        sidebar.classList.toggle('hidden', !isHidden);
+        menuToggle.setAttribute('aria-expanded', String(isHidden));
+      });
+    }
+  </script>
+</body>
+</html>

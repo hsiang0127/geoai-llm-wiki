@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoAI 空間資訊大模型應用庫 | 首頁</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-slate-800 antialiased">
+  <!-- 手機版頂部導覽列 -->
+  <header class="md:hidden bg-slate-900 text-slate-300 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow">
+    <a href="index.html" class="font-bold text-white tracking-wide flex items-center gap-2">
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+      GeoAI &amp; Spatial LLM Wiki
+    </a>
+    <button
+      id="menu-toggle"
+      type="button"
+      aria-label="開啟或收合導覽選單"
+      aria-expanded="false"
+      class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </header>
+
+  <div class="min-h-screen flex flex-col md:flex-row">
+    <!-- 左側固定寬度導覽選單 -->
+    <nav
+      id="sidebar"
+      class="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:left-0 md:w-72 bg-slate-900 text-slate-300 p-6 justify-between z-20"
+    >
+      <div>
+        <div class="hidden md:block mb-8 pb-4 border-b border-slate-800">
+          <p class="text-xs uppercase tracking-widest text-blue-400 font-semibold mb-1">GeoAI Knowledge Base</p>
+          <a href="index.html" class="text-xl font-bold text-white tracking-tight hover:text-blue-400 transition">
+            GeoAI 空間資訊大模型應用庫
+          </a>
+        </div>
+
+        <div class="space-y-6">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">總覽導航</p>
+            <ul class="space-y-1">
+              <li>
+                <a
+                  href="index.html"
+                  class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-600 text-white font-medium"
+                >
+                  <span>首頁總覽</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">核心技術筆記</p>
+            <ul class="space-y-1.5">
+              <li>
+                <a
+                  href="wiki/uav-vision.html"
+                  class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span class="block font-medium">無人機影像多模態辨識</span>
+                  <span class="block text-xs text-slate-400">uav-vision.html</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="wiki/gee-copilot.html"
+                  class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span class="block font-medium">GEE 遙測程式碼生成</span>
+                  <span class="block text-xs text-slate-400">gee-copilot.html</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="wiki/yolo-deepsort.html"
+                  class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span class="block font-medium">UAV 車流追蹤與 TWD97 映射</span>
+                  <span class="block text-xs text-slate-400">yolo-deepsort.html</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="wiki/lidar-rag.html"
+                  class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span class="block font-medium">光達操作手冊 RAG</span>
+                  <span class="block text-xs text-slate-400">lidar-rag.html</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-4 border-t border-slate-800 text-xs text-slate-500">
+        <p>架構：Karpathy LLM Wiki + Tailwind</p>
+        <p class="mt-1">最後更新：2026-11-16</p>
+      </div>
+    </nav>
+
+    <!-- 右側主要內容區 -->
+    <main class="flex-1 md:ml-72 bg-white">
+      <div class="max-w-4xl mx-auto px-6 py-10 md:px-12 md:py-12">
+        <div class="mb-3">
+          <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-blue-50 text-blue-600 border border-blue-200">
+            GeoAI &amp; Spatial LLM Wiki
+          </span>
+        </div>
+
+        <h1 class="text-3xl font-extrabold text-slate-800 mb-6 border-b pb-2">
+          歡迎來到 GeoAI 空間資訊大模型應用庫
+        </h1>
+
+        <section class="space-y-4 text-slate-700 leading-relaxed mb-10">
+          <p>
+            本知識庫致力於系統化整理<span class="font-semibold text-blue-600">空間資訊（Spatial Informatics）</span>、
+            <span class="font-semibold text-blue-600">測量工程</span>與
+            <span class="font-semibold text-blue-600">大型語言模型（LLM）</span>交叉領域的實務技術、架構設計與程式碼範例。
+          </p>
+          <p>
+            我們採用 <span class="font-semibold text-blue-600">Karpathy LLM Wiki</span> 的雙軌維護架構：所有原始論文與參考文章皆完整保存在
+            <code class="px-1.5 py-0.5 bg-slate-100 rounded text-sm text-slate-800">raw/</code> 目錄中作為唯讀事實來源，再經由 AI 編譯為結構化的
+            Markdown 知識索引（<code class="px-1.5 py-0.5 bg-slate-100 rounded text-sm text-slate-800">wiki/index.md</code>）與純靜態 HTML 技術筆記頁面，讓知識隨每次研究不斷複利累積。
+          </p>
+        </section>
+
+        <!-- 三大主題規劃 -->
+        <section class="mb-12">
+          <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <span class="w-1.5 h-6 bg-blue-600 rounded"></span>
+            核心應用規劃路線圖
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <a
+              href="wiki/uav-vision.html"
+              class="block p-5 rounded-xl border border-slate-200 hover:border-blue-600 hover:shadow-md transition bg-white"
+            >
+              <span class="inline-block text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded mb-3">已上線</span>
+              <h3 class="text-lg font-bold text-slate-800 mb-2">無人機影像多模態辨識</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">
+                結合 <span class="font-semibold text-blue-600">Gemini Pro Vision</span> 與航拍空間幾何，進行物件偵測、尺度校正與厚度推算。
+              </p>
+              <p class="mt-4 text-sm font-semibold text-blue-600">閱讀技術筆記 →</p>
+            </a>
+
+            <a
+              href="wiki/gee-copilot.html"
+              class="block p-5 rounded-xl border border-slate-200 hover:border-blue-600 hover:shadow-md transition bg-white"
+            >
+              <span class="inline-block text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded mb-3">已上線</span>
+              <h3 class="text-lg font-bold text-slate-800 mb-2">GEE 遙測程式自動生成</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">
+                撰寫結構化 Prompt 引導 LLM 生成 <span class="font-semibold text-blue-600">Google Earth Engine</span> 遙測分析腳本，並以新竹市 NDVI 為例。
+              </p>
+              <p class="mt-4 text-sm font-semibold text-blue-600">閱讀技術筆記 →</p>
+            </a>
+
+            <a
+              href="wiki/yolo-deepsort.html"
+              class="block p-5 rounded-xl border border-slate-200 hover:border-blue-600 hover:shadow-md transition bg-white"
+            >
+              <span class="inline-block text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded mb-3">已上線</span>
+              <h3 class="text-lg font-bold text-slate-800 mb-2">UAV 車流追蹤與 TWD97 映射</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">
+                整合 <span class="font-semibold text-blue-600">YOLOv8</span>、<span class="font-semibold text-blue-600">DeepSORT</span> 與共線方程式，將無人機交通軌跡映射至 <span class="font-semibold text-blue-600">TWD97</span> 平面座標。
+              </p>
+              <p class="mt-4 text-sm font-semibold text-blue-600">閱讀技術筆記 →</p>
+            </a>
+
+            <a
+              href="wiki/lidar-rag.html"
+              class="block p-5 rounded-xl border border-slate-200 hover:border-blue-600 hover:shadow-md transition bg-white"
+            >
+              <span class="inline-block text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded mb-3">已上線</span>
+              <h3 class="text-lg font-bold text-slate-800 mb-2">光達操作手冊 RAG 系統</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">
+                將龐大的 <span class="font-semibold text-blue-600">LiDAR</span> 作業規範、儀器手冊與測量法規結構化切片，打造附帶條文引用的混合檢索系統。
+              </p>
+              <p class="mt-4 text-sm font-semibold text-blue-600">閱讀技術筆記 →</p>
+            </a>
+          </div>
+        </section>
+
+        <!-- 近期更新紀錄 -->
+        <section>
+          <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <span class="w-1.5 h-6 bg-blue-600 rounded"></span>
+            近期知識庫更新
+          </h2>
+          <div class="border border-slate-200 rounded-xl divide-y divide-slate-200">
+            <div class="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <a href="wiki/lidar-rag.html" class="font-semibold text-blue-600 hover:underline">
+                  光達（LiDAR）操作手冊與測量法規 RAG 檢索系統
+                </a>
+                <p class="text-sm text-slate-600 mt-0.5">
+                  設計結構化切片、Hybrid Search 與條文溯源 Prompt，並提供 Python RAG 檢索原型範例，四大規劃主題全數上線。
+                </p>
+              </div>
+              <span class="text-xs font-mono text-slate-500 shrink-0">2026-11-16</span>
+            </div>
+            <div class="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <a href="wiki/yolo-deepsort.html" class="font-semibold text-blue-600 hover:underline">
+                  GeoAI 實戰：基於 YOLOv8 與 DeepSORT 的無人機車流追蹤與座標映射
+                </a>
+                <p class="text-sm text-slate-600 mt-0.5">
+                  結合 YOLOv8n-visdrone、DeepSORT 與共線方程式將車輛軌跡映射至 TWD97，原文已保存至 <code class="text-xs bg-slate-100 px-1 rounded">raw/articles/</code>。
+                </p>
+              </div>
+              <span class="text-xs font-mono text-slate-500 shrink-0">2026-11-16</span>
+            </div>
+            <div class="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <a href="wiki/gee-copilot.html" class="font-semibold text-blue-600 hover:underline">
+                  GEE Copilot：利用大語言模型自動生成遙測分析腳本
+                </a>
+                <p class="text-sm text-slate-600 mt-0.5">
+                  收錄新竹市 Sentinel-2 NDVI 分析 Prompt 與 GEE Python 程式碼範例，原文已保存至 <code class="text-xs bg-slate-100 px-1 rounded">raw/articles/</code>。
+                </p>
+              </div>
+              <span class="text-xs font-mono text-slate-500 shrink-0">2026-11-16</span>
+            </div>
+            <div class="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <a href="wiki/uav-vision.html" class="font-semibold text-blue-600 hover:underline">
+                  利用多模態大模型推算無人機拍攝食材厚度與空間尺度
+                </a>
+                <p class="text-sm text-slate-600 mt-0.5">
+                  建立首篇範例技術筆記，包含比例尺校正思維與 Python / Gradio 推論介面範例。
+                </p>
+              </div>
+              <span class="text-xs font-mono text-slate-500 shrink-0">2026-11-16</span>
+            </div>
+            <div class="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <span class="font-semibold text-slate-800">確立 GeoAI 雙軌 AGENTS.md 規範</span>
+                <p class="text-sm text-slate-600 mt-0.5">
+                  整合 Karpathy LLM Wiki（<code class="text-xs bg-slate-100 px-1 rounded">raw/</code>、<code class="text-xs bg-slate-100 px-1 rounded">index.md</code>、<code class="text-xs bg-slate-100 px-1 rounded">log.md</code>）與 Tailwind HTML 網站版型規範。
+                </p>
+              </div>
+              <span class="text-xs font-mono text-slate-500 shrink-0">2026-11-16</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    if (menuToggle && sidebar) {
+      menuToggle.addEventListener('click', () => {
+        const isHidden = sidebar.classList.contains('hidden');
+        sidebar.classList.toggle('hidden', !isHidden);
+        menuToggle.setAttribute('aria-expanded', String(isHidden));
+      });
+    }
+  </script>
+</body>
+</html>

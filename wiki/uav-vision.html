@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>無人機影像多模態辨識：食材厚度與空間尺度推算 | GeoAI Wiki</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-slate-800 antialiased">
+  <!-- 手機版頂部導覽列 -->
+  <header class="md:hidden bg-slate-900 text-slate-300 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow">
+    <a href="../index.html" class="font-bold text-white tracking-wide flex items-center gap-2">
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+      GeoAI &amp; Spatial LLM Wiki
+    </a>
+    <button
+      id="menu-toggle"
+      type="button"
+      aria-label="開啟或收合導覽選單"
+      aria-expanded="false"
+      class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </header>
+
+  <div class="min-h-screen flex flex-col md:flex-row">
+    <!-- 左側固定寬度導覽選單 -->
+    <nav
+      id="sidebar"
+      class="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:left-0 md:w-72 bg-slate-900 text-slate-300 p-6 justify-between z-20"
+    >
+      <div>
+        <div class="hidden md:block mb-8 pb-4 border-b border-slate-800">
+          <p class="text-xs uppercase tracking-widest text-blue-400 font-semibold mb-1">GeoAI Knowledge Base</p>
+          <a href="../index.html" class="text-xl font-bold text-white tracking-tight hover:text-blue-400 transition">
+            GeoAI 空間資訊大模型應用庫
+          </a>
+        </div>
+
+        <div class="space-y-6">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">總覽導航</p>
+            <ul class="space-y-1">
+              <li>
+                <a
+                  href="../index.html"
+                  class="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span>首頁總覽</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">核心技術筆記</p>
+            <ul class="space-y-1.5">
+              <li>
+                <a
+                  href="uav-vision.html"
+                  class="block px-3 py-2 rounded-lg bg-blue-600 text-white font-medium"
+                >
+                  <span class="block font-medium">無人機影像多模態辨識</span>
+                  <span class="block text-xs text-blue-100">uav-vision.html</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="gee-copilot.html"
+                  class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span class="block font-medium">GEE 遙測程式碼生成</span>
+                  <span class="block text-xs text-slate-400">gee-copilot.html</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="yolo-deepsort.html"
+                  class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span class="block font-medium">UAV 車流追蹤與 TWD97 映射</span>
+                  <span class="block text-xs text-slate-400">yolo-deepsort.html</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="lidar-rag.html"
+                  class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                >
+                  <span class="block font-medium">光達操作手冊 RAG</span>
+                  <span class="block text-xs text-slate-400">lidar-rag.html</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-4 border-t border-slate-800 text-xs text-slate-500">
+        <p>架構：Karpathy LLM Wiki + Tailwind</p>
+        <p class="mt-1">最後更新：2026-11-16</p>
+      </div>
+    </nav>
+
+    <!-- 右側主要內容區 -->
+    <main class="flex-1 md:ml-72 bg-white">
+      <div class="max-w-4xl mx-auto px-6 py-10 md:px-12 md:py-12">
+        <div class="mb-4 flex flex-wrap items-center gap-2 text-xs">
+          <a href="../index.html" class="text-blue-600 hover:underline">首頁</a>
+          <span class="text-slate-400">/</span>
+          <span class="text-slate-500">技術筆記</span>
+          <span class="text-slate-400">/</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-600 font-semibold border border-blue-200">範例筆記</span>
+        </div>
+
+        <h1 class="text-3xl font-extrabold text-slate-800 mb-6 border-b pb-2">
+          利用多模態大模型推算無人機拍攝食材厚度與空間尺度
+        </h1>
+
+        <div class="mb-8 p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-600 flex flex-wrap gap-x-6 gap-y-2">
+          <span><strong>建立日期：</strong>2026-11-16</span>
+          <span><strong>關鍵技術：</strong>VLM、GSD、尺度參考標靶、Gradio</span>
+          <span><strong>狀態：</strong>技術驗證範例（Sandbox Demo）</span>
+        </div>
+
+        <section class="space-y-4 text-slate-700 leading-relaxed mb-8">
+          <h2 class="text-xl font-bold text-slate-800">1. 問題背景與空間尺度挑戰</h2>
+          <p>
+            在農業曝曬場（如大型食材切片、漁獲乾貨曝曬盤或戶外倉儲堆置）進行無人機巡檢時，單張 RGB 影像屬於二維透視投影，缺乏直接的絕對深度資訊。若僅靠傳統影像分割（如 <span class="font-semibold text-blue-600">YOLO</span>），雖然可以框選出目標位置，卻難以同時對「非標準形狀物體」進行語意理解並估算鋪設厚度與空間尺度。
+          </p>
+          <p>
+            本筆記探討如何結合航拍遙測幾何中的 <span class="font-semibold text-blue-600">GSD（地面採樣距離, Ground Sample Distance）</span>、現場已知尺寸的校正標靶，以及多模態視覺語言模型（<span class="font-semibold text-blue-600">VLM</span>，例如 <span class="font-semibold text-blue-600">Gemini Pro Vision</span>），建立一套可快速估算無人機拍攝食材厚度、陰影高度與空間尺度的推理流程。
+          </p>
+        </section>
+
+        <section class="space-y-4 text-slate-700 leading-relaxed mb-8">
+          <h2 class="text-xl font-bold text-slate-800">2. 混合推算架構：空間幾何 × 多模態語意推理</h2>
+          <p>為了避免大模型對絕對長度產生幻覺，實務上不應讓模型單憑一張俯視圖「猜測公分數」，而需採取三步驟的混合推算管線：</p>
+          <ul class="list-disc pl-6 space-y-2">
+            <li>
+              <strong>中繼資料與比例尺約束</strong>：讀取無人機照片的 <span class="font-semibold text-blue-600">EXIF</span> 與 <span class="font-semibold text-blue-600">GNSS</span> 飛行高度（或拍攝區已知尺寸的 AprilTag / 校正方格），先算出每像素對應的真實物理長度（單位：cm/px）。
+            </li>
+            <li>
+              <strong>斜拍視角或陰影線索輸入</strong>：單純垂直俯拍（Nadir）難以看見厚度，因此建議採取低空斜拍（Oblique，約 30°～45°）或利用太陽仰角產生的物體邊緣陰影長度作為厚度推理線索。
+            </li>
+            <li>
+              <strong>結構化 Prompt Engineering</strong>：在系統提示詞中明確提供「參考標靶的真實寬度（例如 20 cm × 20 cm）」、「拍攝傾角」與「預期輸出 JSON Schema」，要求 <span class="font-semibold text-blue-600">Gemini Pro Vision</span> 先定位標靶與食材堆疊邊緣，再依據相對像素比例推算平均厚度與覆蓋面積。
+            </li>
+          </ul>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-xl font-bold text-slate-800 mb-3">3. Python / Gradio 快速驗證原型程式碼</h2>
+          <p class="text-slate-700 leading-relaxed mb-3">
+            以下提供一段基於 <span class="font-semibold text-blue-600">Python</span> 與 <span class="font-semibold text-blue-600">Gradio</span> 的原型範例程式，示範如何將無人機拍攝影像與空間尺度參數（航高、參考物寬度）封裝為 Prompt，送交多模態大模型進行厚度與尺度推算：
+          </p>
+          <pre><code class="bg-slate-800 text-gray-100 p-4 rounded-lg block overflow-x-auto my-4">import json
+import gradio as gr
+from PIL import Image
+
+def estimate_uav_food_scale(
+    image: Image.Image,
+    altitude_m: float,
+    camera_angle_deg: float,
+    ref_marker_cm: float,
+) -> tuple[str, str]:
+    """
+    結合無人機飛行參數與多模態 VLM Prompt，推算食材厚度與空間尺度（虛擬範例）。
+    """
+    if image is None:
+        return "請先上傳無人機拍攝影像。", "{}"
+
+    width_px, height_px = image.size
+
+    # 1. 組裝具備空間幾何約束的 Prompt
+    prompt = f"""
+    你是一位精通空間測量與遙測影像判釋的 GeoAI 專家。
+    請分析這張無人機拍攝的現場影像（解析度：{width_px}x{height_px} px）：
+    - 無人機相對地面高度：{altitude_m:.2f} 公尺
+    - 相機俯角（與水平面夾角）：{camera_angle_deg:.1f} 度
+    - 畫面中校正參考物（標準色卡/標靶）實際邊長：{ref_marker_cm:.1f} 公分
+
+    請依序執行：
+    1. 辨識畫面中的食材種類與堆疊邊界。
+    2. 找出參考標靶在影像中的相對像素尺度，作為空間比例基準。
+    3. 結合視角與陰影/側面輪廓，推算食材的「平均鋪設厚度（cm）」與「總覆蓋面積（m²）」。
+    請回傳 JSON 格式，包含 item_name, estimated_thickness_cm, coverage_area_m2, confidence, reasoning。
+    """.strip()
+
+    # 2. 模擬呼叫 Gemini Pro Vision API 的結構化回傳結果
+    # 實務上可替換為 google-genai SDK 呼叫 multimodal generate_content
+    mock_response = {
+        "item_name": "日曬切片農產品（測試範例）",
+        "estimated_thickness_cm": 3.8,
+        "coverage_area_m2": 14.6,
+        "gsd_approx_cm_per_px": round((altitude_m * 0.08) / max(width_px / 1000, 1), 3),
+        "confidence": "medium-high",
+        "reasoning": (
+            f"依據 {ref_marker_cm:.1f} cm 校正標靶建立水平比例尺，"
+            f"並結合 {camera_angle_deg:.1f}° 拍攝視角下的堆疊側緣與陰影寬度進行厚度推估。"
+        ),
+    }
+
+    summary = (
+        f"辨識目標：{mock_response['item_name']}\n"
+        f"推算平均厚度：約 {mock_response['estimated_thickness_cm']} cm\n"
+        f"推算覆蓋面積：約 {mock_response['coverage_area_m2']} m²\n"
+        f"推論說明：{mock_response['reasoning']}"
+    )
+    return summary, json.dumps(mock_response, ensure_ascii=False, indent=2)
+
+
+demo = gr.Interface(
+    fn=estimate_uav_food_scale,
+    inputs=[
+        gr.Image(type="pil", label="上傳無人機拍攝影像"),
+        gr.Slider(1.0, 50.0, value=6.5, step=0.5, label="無人機飛行高度 (m)"),
+        gr.Slider(15.0, 90.0, value=40.0, step=1.0, label="相機拍攝俯角 (deg)"),
+        gr.Number(value=20.0, label="現場校正標靶實際邊長 (cm)"),
+    ],
+    outputs=[
+        gr.Textbox(label="空間尺度判釋摘要", lines=5),
+        gr.Code(label="結構化 JSON 輸出", language="json"),
+    ],
+    title="GeoAI UAV 多模態食材厚度與尺度推算器 (Demo)",
+    description="輸入無人機航拍影像與已知參考標靶尺寸，示範 VLM 結合空間幾何約束的推論流程。",
+)
+
+if __name__ == "__main__":
+    demo.launch()
+</code></pre>
+        </section>
+
+        <section class="p-5 rounded-xl bg-blue-50 border border-blue-200 text-slate-700">
+          <h3 class="font-bold text-blue-800 mb-2">實作注意事項與誤差控制</h3>
+          <ul class="list-disc pl-5 space-y-1.5 text-sm">
+            <li>若缺乏現場實體比例標靶，單純依賴無人機氣壓計高度（Relative Altitude）推算 <span class="font-semibold text-blue-600">GSD</span>，在高差變化明顯的場景可能產生 5%～15% 的尺度誤差。</li>
+            <li>對於需要毫米級精度的高要求測量任務，建議搭配無人機多視角影像重建出 <span class="font-semibold text-blue-600">DSM（數值表面模型）</span>後，再由大模型進行語意區域切割與體積統計。</li>
+          </ul>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    if (menuToggle && sidebar) {
+      menuToggle.addEventListener('click', () => {
+        const isHidden = sidebar.classList.contains('hidden');
+        sidebar.classList.toggle('hidden', !isHidden);
+        menuToggle.setAttribute('aria-expanded', String(isHidden));
+      });
+    }
+  </script>
+</body>
+</html>
